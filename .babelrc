@@ -1,6 +1,7 @@
 {
   "env": {
     "module": {
+      "ignore": ["**/*.test.js"],
       "presets": [
         [
           "@babel/preset-env",

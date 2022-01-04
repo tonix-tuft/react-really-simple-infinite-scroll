@@ -21,9 +21,23 @@
     "node": ">=8",
     "npm": ">=5"
   },
+  "jest": {
+    "transform": {
+      "^.+\\.[t|j]sx?$": "babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "node_modules/(?!react-js-utl)"
+    ],
+    "collectCoverageFrom": [
+      "!src/.eslintrc.js",
+      "!src/**/*.scss",
+      "!src/**/*.css"
+    ]
+  },
   "scripts": {
-    "test": "cross-env CI=1 react-scripts test --env=jsdom",
-    "test:watch": "react-scripts test --env=jsdom",
+    "test": "cross-env CI=1 react-scripts test --env=jsdom --colors",
+    "test-coverage": "cross-env CI=1 react-scripts test --env=jsdom --colors --coverage",
+    "test:watch": "react-scripts test --env=jsdom --colors",
     "build": "rollup -c",
     "start": "rollup -c -w",
     "mkdir-module": "mkdir -p ./module",
@@ -85,6 +99,7 @@
     "eslint-plugin-react": "^7.20.6",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-standard": "^4.0.1",
+    "babel-jest": "^26.6.0",
     "gh-pages": "^2.1.1",
     "node-sass": "^4.14.1",
     "onchange": "^6.1.1",
