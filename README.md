@@ -22,6 +22,9 @@ npm install --save react react-dom
 import React, { useState, useCallback, useEffect } from "react";
 import { ReallySimpleInfiniteScroll } from "react-really-simple-infinite-scroll";
 
+// You can use any loading component you want. This is just an example using a spinner from "react-spinners-kit".
+import { CircleSpinner } from "react-spinners-kit";
+
 /**
  * @type {number}
  */
@@ -43,6 +46,7 @@ const generateMoreItems = numberOfItemsToGenerate => {
 };
 
 export default function App() {
+  const [displayInverse, setDisplayInverse] = useState(false);
   const [hasMore, setHasMore] = useState(true);
   const [isInfiniteLoading, setIsInfiniteLoading] = useState(true);
   const [items, setItems] = useState([]);
@@ -69,19 +73,35 @@ export default function App() {
   return (
     <div className="app">
       <ReallySimpleInfiniteScroll
+        key={displayInverse}
         className="infinite-scroll"
         hasMore={hasMore}
         length={items.length}
-        loadingComponent={<div>Loading...</div>}
+        loadingComponent={
+          <div className="loading-component">
+            <div className="spinner">
+              <CircleSpinner size={20} />
+            </div>{" "}
+            <span className="loading-label">Loading...</span>
+          </div>
+        }
         isInfiniteLoading={isInfiniteLoading}
         onInfiniteLoad={onInfiniteLoadCallback}
+        displayInverse={displayInverse}
       >
-        {items.map(item => (
+        {(displayInverse ? items.slice().reverse() : items).map(item => (
           <div key={item.id} className="item">
             {item.label}
           </div>
         ))}
       </ReallySimpleInfiniteScroll>
+      <div>
+        <button
+          onClick={() => setDisplayInverse(displayInverse => !displayInverse)}
+        >
+          Toggle displayInverse
+        </button>
+      </div>
     </div>
   );
 }

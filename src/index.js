@@ -31,6 +31,7 @@ import {
   hasHorizontalScrollbar,
   isInt,
   debounce,
+  noOpFn,
 } from "js-utl";
 import { classNames } from "react-js-utl/utils";
 
@@ -41,7 +42,7 @@ export class ReallySimpleInfiniteScroll extends React.Component {
     this.handleScroll = this.handleScroll.bind(this);
     this.onScrollStop = debounce(this.onScrollStop.bind(this), 100);
 
-    this.itemsIdsRefsMap = {};
+    this.componentDidUpdateHasScrolledToStart = false;
     this.isLoading = false;
     this.isScrolling = false;
     this.lastScrollStopPromise = null;
@@ -74,40 +75,55 @@ export class ReallySimpleInfiniteScroll extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
+    if (prevProps.children.length !== this.props.children.length) {
+      if (!this.componentDidUpdateHasScrolledToStart) {
+        this.scrollToStart();
+        this.componentDidUpdateHasScrolledToStart = true;
+      }
+    }
+
     // prettier-ignore
     if (
-            this.isLoading &&
+        this.isLoading &&
+        (
+            (prevProps.isInfiniteLoading && !this.props.isInfiniteLoading)
+            // eslint-disable-next-line operator-linebreak
+            ||
             (
-                (prevProps.isInfiniteLoading && !this.props.isInfiniteLoading)
+                (this.props.hasMore || prevProps.hasMore)
                 // eslint-disable-next-line operator-linebreak
-                ||
-                (
-                    (this.props.hasMore || prevProps.hasMore)
-                    // eslint-disable-next-line operator-linebreak
-                    &&
-                    prevProps.children.length !== this.props.children.length
-                )
+                &&
+                prevProps.children.length !== this.props.children.length
             )
-        ) {
-            if (this.props.displayInverse && snapshot) {
-                const list = this.node.current;
-                const axis = this.axis();
-                const scrollDimProperty = this.scrollDimProperty(axis);
-                const scrollProperty = this.scrollProperty(axis);
-                const scrollDelta = snapshot.scrollDelta;
-                const scrollTo = list[scrollDimProperty] - scrollDelta;
+        )
+    ) {
+        if (this.props.displayInverse && snapshot) {
+          const list = this.node.current;
+          const axis = this.axis();
+          const scrollDimProperty = this.scrollDimProperty(axis);
+          const scrollProperty = this.scrollProperty(axis);
+          const scrollDelta = snapshot.scrollDelta;
+          const scrollTo = list[scrollDimProperty] - scrollDelta;
 
-                this.scrollTo(scrollProperty, scrollTo);
-            }
-            this.isLoading = false;
+          this.scrollTo(scrollProperty, scrollTo);
+        } else {
+          noOpFn();
         }
+        this.isLoading = false;
+    }
   }
 
   loadingComponentRenderer() {
-    const { loadingComponent } = this.props;
+    const {
+      loadingComponent,
+      reallySimpleInfiniteScrollLoadingComponentClassName = "really-simple-infinite-scroll-loading-component",
+    } = this.props;
 
     return (
-      <div className="really-simple-infinite-scroll-loading-component" key={-2}>
+      <div
+        className={reallySimpleInfiniteScrollLoadingComponentClassName}
+        key={-2}
+      >
         {loadingComponent}
       </div>
     );
@@ -133,7 +149,7 @@ export class ReallySimpleInfiniteScroll extends React.Component {
     return axis === "y" ? "scrollHeight" : "scrollWidth";
   }
 
-  hasScrollbarFunction(axis) {
+  static hasScrollbarFunction(axis) {
     return axis === "y" ? hasVerticalScrollbar : hasHorizontalScrollbar;
   }
 
@@ -164,9 +180,14 @@ export class ReallySimpleInfiniteScroll extends React.Component {
     }
   }
 
-  scrollToId(id) {
-    if (this.itemsIdsRefsMap[id] && this.itemsIdsRefsMap[id].current) {
-      this.itemsIdsRefsMap[id].current.scrollIntoView();
+  /**
+   * @see https://developer.mozilla.org/en-US/docs/Web/API/Element/scrollIntoView#parameters
+   */
+  scrollToId(id, { alignToTop = true, scrollIntoViewOptions = void 0 } = {}) {
+    if (this.props?.itemIdRefMap?.[id]?.current) {
+      this.props.itemIdRefMap[id].current.scrollIntoView(
+        scrollIntoViewOptions || alignToTop
+      );
     }
   }
 
@@ -247,6 +268,7 @@ export class ReallySimpleInfiniteScroll extends React.Component {
       displayInverse,
       isInfiniteLoading,
       className,
+      reallySimpleInfiniteScrollClassName = "really-simple-infinite-scroll",
       hasMore,
     } = this.props;
 
@@ -254,7 +276,7 @@ export class ReallySimpleInfiniteScroll extends React.Component {
       <div
         className={classNames(
           styles.reallySimpleInfiniteScroll,
-          "really-simple-infinite-scroll",
+          reallySimpleInfiniteScrollClassName,
           className
         )}
         ref={this.node}

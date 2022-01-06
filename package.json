@@ -31,13 +31,16 @@
     "collectCoverageFrom": [
       "!src/.eslintrc.js",
       "!src/**/*.scss",
-      "!src/**/*.css"
+      "!src/**/*.css",
+      "!src/**/__snapshots__/**/*",
+      "!src/**/__mocks__/**/*"
     ]
   },
   "scripts": {
-    "test": "cross-env CI=1 react-scripts test --env=jsdom --colors",
-    "test-coverage": "cross-env CI=1 react-scripts test --env=jsdom --colors --coverage",
+    "test": "react-scripts test --env=jsdom --colors --watchAll=false",
+    "test-coverage": "react-scripts test --env=jsdom --colors --coverage --watchAll=false",
     "test:watch": "react-scripts test --env=jsdom --colors",
+    "test-ci": "cross-env CI=1 react-scripts test --env=jsdom --colors",
     "build": "rollup -c",
     "start": "rollup -c -w",
     "mkdir-module": "mkdir -p ./module",
@@ -87,8 +90,13 @@
     "@rollup/plugin-node-resolve": "^8.4.0",
     "@rollup/plugin-url": "^5.0.1",
     "@svgr/rollup": "^5.4.0",
+    "@testing-library/jest-dom": "^5.16.1",
+    "@testing-library/react": "^12.1.2",
+    "@wojtekmaj/enzyme-adapter-react-17": "^0.6.6",
     "babel-eslint": "10.1.0",
+    "babel-jest": "^26.6.0",
     "cross-env": "^6.0.3",
+    "enzyme": "^3.11.0",
     "eslint": "^7.0.0",
     "eslint-config-react-app": "^6.0.0",
     "eslint-config-standard": "^14.1.1",
@@ -99,16 +107,18 @@
     "eslint-plugin-react": "^7.20.6",
     "eslint-plugin-react-hooks": "^4.2.0",
     "eslint-plugin-standard": "^4.0.1",
-    "babel-jest": "^26.6.0",
     "gh-pages": "^2.1.1",
+    "jest-in-case": "^1.0.2",
     "node-sass": "^4.14.1",
     "onchange": "^6.1.1",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-scripts": "^4.0.3",
+    "react-test-renderer": "^17.0.2",
     "rollup": "^2.28.1",
     "rollup-plugin-peer-deps-external": "^2.2.3",
     "rollup-plugin-postcss": "^3.1.8",
+    "snapshot-diff": "^0.9.0",
     "typescript": "^3.9.7"
   },
   "dependencies": {

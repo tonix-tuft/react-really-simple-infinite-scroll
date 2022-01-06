@@ -33,6 +33,7 @@ module.exports = {
     "comma-dangle": "off",
     indent: ["off"],
     "template-curly-spacing": ["off"],
+    "react/jsx-indent": "off",
   },
   overrides: [],
 };
