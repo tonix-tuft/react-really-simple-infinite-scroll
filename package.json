@@ -1,6 +1,6 @@
 {
   "name": "react-really-simple-infinite-scroll",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Really simple infinite scroll component for React.",
   "author": "Anton Bagdatyev (Tonix)",
   "license": "MIT",
