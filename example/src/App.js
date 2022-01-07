@@ -53,7 +53,11 @@ export default function App() {
     <div className="app">
       <ReallySimpleInfiniteScroll
         key={displayInverse}
-        className="infinite-scroll"
+        className={`infinite-scroll ${
+          items.length && displayInverse
+            ? "display-inverse"
+            : "display-not-inverse"
+        }`}
         hasMore={hasMore}
         length={items.length}
         loadingComponent={

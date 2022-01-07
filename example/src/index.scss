@@ -11,10 +11,12 @@ body {
   justify-content: center;
   flex-direction: column;
 
+  $border-color: #d9d9d9;
+
   .infinite-scroll {
     width: 500px;
     height: 500px;
-    border: 1px solid #d9d9d9;
+    border: 1px solid $border-color;
     border-radius: 20px;
     padding: 30px 0;
     border-top-right-radius: 0;
@@ -25,12 +27,12 @@ body {
 
     .item {
       padding: 15px 20px;
-      border-bottom: 1px solid #d9d9d9;
+      border-bottom: 1px solid $border-color;
       color: #505050;
     }
 
     .item:first-child {
-      border-top: 1px solid #d9d9d9;
+      border-top: 1px solid $border-color;
     }
 
     .loading-component {
@@ -53,6 +55,22 @@ body {
         color: #979797;
       }
     }
+
+    &.display-inverse {
+      .item {
+        border-bottom: none;
+        border-top: 1px solid $border-color;
+      }
+
+      .item:last-child {
+        border-bottom: 1px solid $border-color;
+      }
+
+      .loading-component {
+        padding-top: 0px;
+        padding-bottom: 20px;
+      }
+    }
   }
 
   button {
@@ -60,7 +78,7 @@ body {
     background: linear-gradient(0deg, #f3f3f3, transparent);
     font-size: 14px;
     color: #808080;
-    border: 1px solid #d9d9d9;
+    border: 1px solid $border-color;
     border-radius: 10px;
     box-shadow: 0 8px 8px -5px rgba(0, 0, 0, 0.1);
     cursor: pointer;

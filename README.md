@@ -4,6 +4,10 @@ Really simple infinite scroll component for React.
 
 [![NPM](https://img.shields.io/npm/v/react-really-simple-infinite-scroll.svg)](https://www.npmjs.com/package/react-really-simple-infinite-scroll)
 
+<p align="center">
+  <img src="https://raw.githubusercontent.com/tonix-tuft/react-really-simple-infinite-scroll/master/example/img/react-really-simple-infinite-scroll.gif" />
+</p>
+
 ## Installation
 
 ```bash
@@ -74,7 +78,11 @@ export default function App() {
     <div className="app">
       <ReallySimpleInfiniteScroll
         key={displayInverse}
-        className="infinite-scroll"
+        className={`infinite-scroll ${
+          items.length && displayInverse
+            ? "display-inverse"
+            : "display-not-inverse"
+        }`}
         hasMore={hasMore}
         length={items.length}
         loadingComponent={
