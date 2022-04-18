@@ -1021,4 +1021,82 @@ describe("ReallySimpleInfiniteScroll", () => {
 
     expect(onInfiniteLoad).not.toHaveBeenCalled();
   });
+
+  test("can be rendered without children using just the length property", () => {
+    const infiniteScrollTree = renderer
+      .create(<ReallySimpleInfiniteScroll length={5} />)
+      .toJSON();
+    expect(infiniteScrollTree).toMatchInlineSnapshot(`
+      <div
+        className="really-simple-infinite-scroll"
+        onScroll={[Function]}
+      />
+    `);
+  });
+
+  test("can be updated without children using just the length property", () => {
+    const { rerender } = render(
+      <ReallySimpleInfiniteScroll
+        length={1}
+        loadingComponent={<div>Loading...</div>}
+      />
+    );
+
+    rerender(
+      <ReallySimpleInfiniteScroll
+        length={5}
+        loadingComponent={<div>Loading...</div>}
+      />
+    );
+  });
+
+  test("loading new data as soon the thresold is reached when scrolling when using just the length property", () => {
+    const reallySimpleInfiniteScrollClassName = "infinite-scroll";
+    const onInfiniteLoad = jest.fn();
+
+    let instance = null;
+    const { rerender, container } = render(
+      <ReallySimpleInfiniteScroll
+        ref={componentInstance => {
+          instance = componentInstance;
+        }}
+        reallySimpleInfiniteScrollClassName={
+          reallySimpleInfiniteScrollClassName
+        }
+        hasMore
+        length={5}
+        loadingComponent={<div>Loading...</div>}
+        isInfiniteLoading={false}
+        onInfiniteLoad={onInfiniteLoad}
+      />
+    );
+
+    const infiniteScrollElement = container.querySelector(
+      `.${reallySimpleInfiniteScrollClassName}`
+    );
+
+    fireEvent.scroll(infiniteScrollElement);
+
+    expect(screen.queryByText(/Loading[.][.][.]/)).toBeInTheDocument();
+    expect(onInfiniteLoad).toHaveBeenCalled();
+    expect(instance.isLoading).toBe(true);
+
+    rerender(
+      <ReallySimpleInfiniteScroll
+        ref={componentInstance => {
+          instance = componentInstance;
+        }}
+        reallySimpleInfiniteScrollClassName={
+          reallySimpleInfiniteScrollClassName
+        }
+        hasMore
+        isInfiniteLoading
+        length={5}
+        loadingComponent={<div>Loading...</div>}
+        onInfiniteLoad={onInfiniteLoad}
+      />
+    );
+
+    expect(instance.isLoading).toBe(true);
+  });
 });

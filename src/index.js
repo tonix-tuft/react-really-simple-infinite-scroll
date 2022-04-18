@@ -60,7 +60,12 @@ export class ReallySimpleInfiniteScroll extends React.Component {
   }
 
   getSnapshotBeforeUpdate(prevProps) {
-    if (prevProps.children.length < this.props.children.length) {
+    const doesNotHaveChildren = !this.props.children;
+    if (
+      doesNotHaveChildren
+        ? prevProps.length < this.props.length
+        : prevProps.children.length < this.props.children.length
+    ) {
       const list = this.node.current;
       const axis = this.axis();
       const scrollDimProperty = this.scrollDimProperty(axis);
@@ -75,7 +80,12 @@ export class ReallySimpleInfiniteScroll extends React.Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.children.length !== this.props.children.length) {
+    const doesNotHaveChildren = !this.props.children;
+    if (
+      doesNotHaveChildren
+        ? prevProps.length !== this.props.length
+        : prevProps.children.length !== this.props.children.length
+    ) {
       if (!this.componentDidUpdateHasScrolledToStart) {
         this.scrollToStart();
         this.componentDidUpdateHasScrolledToStart = true;
@@ -93,7 +103,10 @@ export class ReallySimpleInfiniteScroll extends React.Component {
                 (this.props.hasMore || prevProps.hasMore)
                 // eslint-disable-next-line operator-linebreak
                 &&
-                prevProps.children.length !== this.props.children.length
+                (
+                  !this.props.children ? prevProps.length !== this.props.length
+                    : prevProps.children.length !== this.props.children.length
+                )
             )
         )
     ) {
@@ -264,7 +277,7 @@ export class ReallySimpleInfiniteScroll extends React.Component {
 
   render() {
     const {
-      children,
+      children = void 0,
       displayInverse,
       isInfiniteLoading,
       className,
